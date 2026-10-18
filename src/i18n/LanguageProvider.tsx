@@ -5,13 +5,15 @@ import { LANGUAGE_INFO, isLanguage, type Language, type Messages } from "./langu
 
 const STORAGE_KEY = "briefklar.language";
 const listeners = new Set<() => void>();
+/** Fallback when localStorage cannot be written (e.g. blocked storage): the choice lasts for this page view. */
+let unsavedLanguage: Language | null = null;
 
 function readStored(): Language | null {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
-    return isLanguage(value) ? value : null;
+    return isLanguage(value) ? value : unsavedLanguage;
   } catch {
-    return null;
+    return unsavedLanguage;
   }
 }
 
@@ -34,8 +36,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const setLanguage = useCallback((next: Language) => {
     try {
       localStorage.setItem(STORAGE_KEY, next);
+      unsavedLanguage = null;
     } catch {
-      // Storage unavailable (private mode): the choice lasts for this page view only.
+      unsavedLanguage = next;
     }
     listeners.forEach((listener) => listener());
   }, []);
