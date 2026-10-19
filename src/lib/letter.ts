@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * Shared contract between the /api/analyze route (server) and the UI (client).
- * The server asks Claude for exactly this shape via structured outputs.
+ * The server builds it from Mistral OCR (transcript) and a Mistral structured-output call (everything else).
  */
 
 export const SENDER_TYPES = [
@@ -104,7 +104,7 @@ export type Urgency = (typeof URGENCY_LEVELS)[number];
 
 /** Error body returned by /api/analyze with a non-2xx status. */
 export type AnalyzeError = {
-  error: "no_file" | "unsupported_type" | "too_large" | "not_a_letter" | "rate_limited" | "upstream" | "refused";
+  error: "no_file" | "unsupported_type" | "too_large" | "not_a_letter" | "rate_limited" | "upstream";
 };
 
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;

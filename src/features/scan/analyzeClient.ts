@@ -11,7 +11,6 @@ const SERVER_ERRORS: readonly AnalyzeError["error"][] = [
   "not_a_letter",
   "rate_limited",
   "upstream",
-  "refused",
 ];
 
 function errorFromStatus(status: number): AnalyzeError["error"] {

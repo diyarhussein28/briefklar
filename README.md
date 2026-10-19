@@ -3,7 +3,36 @@
 **DE:** Behördenbrief fotografieren, in der eigenen Sprache verstehen, Frist nicht verpassen.
 **EN:** Photograph an official German letter, understand it in your language, never miss the deadline.
 
-BriefKlar is a small, free web app (PWA) for people in Germany who struggle with official letters — speakers of Arabic, Ukrainian and Turkish, older people and people with low literacy. A photo of the letter is explained by AI (Claude by Anthropic) in three short sentences, the deadline (Frist), amount and reference number are extracted, and the user can add a reminder to their calendar and find free counselling nearby. No account, no bank access, no chat.
+BriefKlar is a small, free web app (PWA) for people in Germany who struggle with official letters — speakers of Arabic, Ukrainian and Turkish, older people and people with low literacy. A photo of the letter is explained by AI (Mistral AI, a provider based in the EU) in three short sentences, the deadline (Frist), amount and reference number are extracted, and the user can add a reminder to their calendar and find free counselling nearby. No account, no bank access, no chat.
+
+## بالعربية: تشغيل التطبيق بمفتاح Mistral المجاني
+
+<div dir="rtl">
+
+يستخدم BriefKlar الذكاء الاصطناعي من شركة **Mistral AI** (شركة فرنسية في الاتحاد الأوروبي). الخطة المجانية «Experiment» لا تحتاج إلى بطاقة ائتمان.
+
+**1. الحصول على المفتاح المجاني**
+
+1. افتح الموقع https://console.mistral.ai وأنشئ حسابًا.
+2. اختر الخطة المجانية **Experiment** وأكّد رقم هاتفك.
+3. افتح قسم **API Keys** وأنشئ مفتاحًا جديدًا، ثم انسخه واحفظه في مكان آمن.
+4. **مهم قبل الإطلاق:** في لوحة الإدارة **Admin ← Privacy** أوقف خيار **Anonymous improvement data**. بدون ذلك قد تستخدم Mistral الرسائل لتدريب نماذجها، وهذا يخالف ما نَعِد به المستخدمين.
+
+**2. تشغيل التطبيق على جهازك**
+
+1. في مجلد المشروع نفّذ:
+
+   ```bash
+   npm install
+   cp .env.example .env.local
+   ```
+
+2. افتح الملف `.env.local` واكتب مفتاحك بعد `MISTRAL_API_KEY=`.
+3. شغّل التطبيق بالأمر `npm run dev` ثم افتح http://localhost:3000 في المتصفح.
+
+**ملاحظة:** للخطة المجانية حدود في عدد الطلبات. يجب التحقق من شروط Mistral: هل يُسمح باستخدام الخطة المجانية لخدمة عامة؟ إذا لم يكن ذلك مسموحًا، انتقل لاحقًا إلى خطة مدفوعة (الدفع حسب الاستخدام).
+
+</div>
 
 ## Features (v1)
 
@@ -19,7 +48,7 @@ BriefKlar is a small, free web app (PWA) for people in Germany who struggle with
 
 - Next.js 16 (App Router, `cacheComponents`), React 19, TypeScript
 - Tailwind CSS v4
-- Anthropic SDK (`@anthropic-ai/sdk`) on the server, `zod` for validating the AI output
+- Mistral AI SDK (`@mistralai/mistralai`) on the server: Mistral OCR (`mistral-ocr-latest`) turns the photo/PDF into text, then `mistral-medium-latest` explains it using structured outputs; `zod` validates the AI output
 - `ics` for calendar files
 - Vitest + jsdom + Testing Library
 - Fonts: Noto Sans + Noto Sans Arabic via `next/font/google` (self-hosted at build time; the build needs network access to Google Fonts once)
@@ -28,11 +57,13 @@ BriefKlar is a small, free web app (PWA) for people in Germany who struggle with
 
 ```bash
 npm install
-cp .env.example .env.local   # then set ANTHROPIC_API_KEY
+cp .env.example .env.local   # then set MISTRAL_API_KEY
 npm run dev                  # http://localhost:3000
 ```
 
-`ANTHROPIC_API_KEY` is only used on the server (`/api/analyze`) and never sent to the browser.
+`MISTRAL_API_KEY` is only used on the server (`/api/analyze`) and never sent to the browser.
+
+**Getting a free key:** go to https://console.mistral.ai, choose the free **Experiment** plan (phone verification, no credit card), then create an API key under **API Keys** and put it into `.env.local`. The free plan has rate limits. Before going live, read the pre-launch checklist below — in particular the training toggle.
 
 ## Scripts
 
@@ -47,8 +78,10 @@ npm run dev                  # http://localhost:3000
 
 ## Privacy by design
 
-- **Letters are not stored.** The image is sent over HTTPS to our server, processed in memory, forwarded to the AI provider for this one request and then discarded. Letter content is not written to logs.
-- **No training.** Data sent through Anthropic's commercial API is not used to train models.
+- **Letters are not stored.** The image is sent over HTTPS to our server, processed in memory, forwarded to the AI provider (Mistral AI) for this one request and then discarded. Letter content is not written to logs.
+- **Two steps at Mistral:** Mistral OCR turns the photo/PDF into text, then a Mistral language model explains the text.
+- **No training — only if configured.** According to Mistral's help center, Mistral OCR is not used for training (Experiment and Scale plans) and has Zero Data Retention by default. On the free Experiment plan, however, requests to the language models **may be used to train Mistral's models unless** the account owner switches off **"Anonymous improvement data"** in the Mistral Admin panel → Privacy. The consent text promises "not used to train AI", so this toggle must be off (see pre-launch checklist).
+- **EU provider.** Mistral AI SAS is based in France (EU) and states that it hosts data in the EU by default, so no transfer to the USA is needed (to be confirmed, see checklist).
 - **No account, no cookies, no tracking.**
 - **On the device only:** chosen language, consent (`briefklar.consent.v1`), deadlines and postcode live in the browser's `localStorage`.
 - Users can withdraw consent on `/datenschutz` at any time.
@@ -60,7 +93,9 @@ npm run dev                  # http://localhost:3000
 - **GDPR Art. 9:** letters can contain special-category data (health, benefits, residence status) → explicit consent before the first upload (`src/features/consent`).
 - **Before launch, the operator must:**
   - fill in every `[TODO: …]` placeholder (highlighted in yellow) in `src/app/impressum/page.tsx` and `src/app/datenschutz/page.tsx`;
-  - sign the Data Processing Addendum with Anthropic and confirm data retention (ideally Zero Data Retention, so "not stored" holds for the AI provider too), the contracting entity and the legal basis for the transfer to the USA (EU-US Data Privacy Framework and/or Standard Contractual Clauses) — or choose EU-only processing;
+  - **switch off "Anonymous improvement data"** in the Mistral Admin panel → Privacy (otherwise, on the free Experiment plan, requests to the language models may be used for training and the consent text would be wrong), then remove the matching `[TODO]` in the Datenschutzerklärung;
+  - confirm with Mistral's terms/DPA: the contracting entity and address (Mistral AI SAS, 15 rue des Halles, 75001 Paris, France), the Data Processing Agreement, the retention period for language-model (chat) API data, EU hosting, and whether sub-processors outside the EU are used;
+  - **TODO:** check Mistral's terms whether the free Experiment plan may be used for a public/commercial service; if not, switch to a paid plan (pay-as-you-go). Also keep its rate limits in mind;
   - name the hosting provider (with a DPA) and its log retention;
   - name the competent data protection supervisory authority.
 
@@ -76,7 +111,7 @@ src/
     deadlines/          on-device deadline list, reminders, .ics export
     help/               free counselling links
     consent/            language picker, AI disclosure + consent gate, language switcher
-  server/               Claude prompt and letter analysis (server only)
+  server/               Mistral OCR + prompt and letter analysis (server only)
   lib/                  shared contracts (letter analysis schema)
   i18n/                 languages, LanguageProvider, useT()
 ```

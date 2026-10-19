@@ -7,13 +7,13 @@ export type Language = (typeof LANGUAGES)[number];
 
 export const LANGUAGE_INFO: Record<
   Language,
-  { nativeName: string; dir: "rtl" | "ltr"; speechLang: string; claudeName: string }
+  { nativeName: string; dir: "rtl" | "ltr"; speechLang: string; promptName: string }
 > = {
-  ar: { nativeName: "العربية", dir: "rtl", speechLang: "ar-SA", claudeName: "Arabic (Modern Standard Arabic, simple words)" },
-  uk: { nativeName: "Українська", dir: "ltr", speechLang: "uk-UA", claudeName: "Ukrainian" },
-  tr: { nativeName: "Türkçe", dir: "ltr", speechLang: "tr-TR", claudeName: "Turkish" },
-  en: { nativeName: "English", dir: "ltr", speechLang: "en-US", claudeName: "simple English" },
-  de: { nativeName: "Leichte Sprache", dir: "ltr", speechLang: "de-DE", claudeName: "German in Leichte Sprache (very short sentences, everyday words)" },
+  ar: { nativeName: "العربية", dir: "rtl", speechLang: "ar-SA", promptName: "Arabic (Modern Standard Arabic, simple words)" },
+  uk: { nativeName: "Українська", dir: "ltr", speechLang: "uk-UA", promptName: "Ukrainian" },
+  tr: { nativeName: "Türkçe", dir: "ltr", speechLang: "tr-TR", promptName: "Turkish" },
+  en: { nativeName: "English", dir: "ltr", speechLang: "en-US", promptName: "simple English" },
+  de: { nativeName: "Leichte Sprache", dir: "ltr", speechLang: "de-DE", promptName: "German in Leichte Sprache (very short sentences, everyday words)" },
 };
 
 export function isLanguage(value: unknown): value is Language {

@@ -30,7 +30,7 @@ const en = {
   stepsHeading: "What can I do now?",
   originalHeading: "Original letter (German)",
   originalHint: "Yellow marks show where we found the information.",
-  aiDisclosure: "Created by AI (Claude). Check important information in the original letter.",
+  aiDisclosure: "Created by AI (Mistral AI). Check important information in the original letter.",
   scanAnother: "Scan another letter",
 };
 
@@ -68,7 +68,7 @@ export const resultMessages: Messages<ResultMessageKey> = {
     stepsHeading: "ماذا أفعل الآن؟",
     originalHeading: "الرسالة الأصلية (بالألمانية)",
     originalHint: "العلامات الصفراء تُظهر أين وجدنا المعلومات.",
-    aiDisclosure: "أُنشئ هذا الشرح بالذكاء الاصطناعي (Claude). تحقّق من المعلومات المهمة في الرسالة الأصلية.",
+    aiDisclosure: "أُنشئ هذا الشرح بالذكاء الاصطناعي (Mistral AI). تحقّق من المعلومات المهمة في الرسالة الأصلية.",
     scanAnother: "صوّر رسالة أخرى",
   },
   uk: {
@@ -101,7 +101,7 @@ export const resultMessages: Messages<ResultMessageKey> = {
     stepsHeading: "Що я можу зробити зараз?",
     originalHeading: "Оригінал листа (німецькою)",
     originalHint: "Жовтим позначено місця, де ми знайшли інформацію.",
-    aiDisclosure: "Створено штучним інтелектом (Claude). Перевірте важливу інформацію в оригіналі листа.",
+    aiDisclosure: "Створено штучним інтелектом (Mistral AI). Перевірте важливу інформацію в оригіналі листа.",
     scanAnother: "Сканувати інший лист",
   },
   tr: {
@@ -134,7 +134,7 @@ export const resultMessages: Messages<ResultMessageKey> = {
     stepsHeading: "Şimdi ne yapabilirim?",
     originalHeading: "Orijinal mektup (Almanca)",
     originalHint: "Sarı işaretler bilgileri nerede bulduğumuzu gösterir.",
-    aiDisclosure: "Yapay zekâ (Claude) tarafından oluşturuldu. Önemli bilgileri orijinal mektupta kontrol edin.",
+    aiDisclosure: "Yapay zekâ (Mistral AI) tarafından oluşturuldu. Önemli bilgileri orijinal mektupta kontrol edin.",
     scanAnother: "Başka bir mektup tara",
   },
   de: {
@@ -167,7 +167,7 @@ export const resultMessages: Messages<ResultMessageKey> = {
     stepsHeading: "Was kann ich jetzt tun?",
     originalHeading: "Der Brief im Original",
     originalHint: "Gelb markiert: Hier stehen die wichtigen Infos.",
-    aiDisclosure: "Eine KI hat das gemacht (Claude). Prüfen Sie wichtige Infos im Original·brief.",
+    aiDisclosure: "Eine KI hat das gemacht (Mistral AI). Prüfen Sie wichtige Infos im Original·brief.",
     scanAnother: "Neuen Brief scannen",
   },
 };

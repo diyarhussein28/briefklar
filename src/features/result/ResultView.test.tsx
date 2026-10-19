@@ -44,7 +44,7 @@ describe("ResultView", () => {
     expect(screen.getByText(sampleAnalysis.urgencyReason)).toBeTruthy();
     expect(screen.getByRole("heading", { level: 1, name: sampleAnalysis.title })).toBeTruthy();
     for (const sentence of sampleAnalysis.summary) expect(screen.getByText(sentence)).toBeTruthy();
-    expect(screen.getByText(/Created by AI \(Claude\)/)).toBeTruthy();
+    expect(screen.getByText(/Created by AI \(Mistral AI\)/)).toBeTruthy();
   });
 
   it("hides the read-aloud button without speech synthesis", () => {

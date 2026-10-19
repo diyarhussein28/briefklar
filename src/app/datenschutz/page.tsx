@@ -39,7 +39,7 @@ export default function DatenschutzPage() {
         <h3 className={h3}>2.1 Ihr Brief (Foto oder PDF)</h3>
         <p className={p}>
           Wenn Sie einen Brief fotografieren oder hochladen, wird die Datei verschlüsselt (HTTPS) an unseren Server
-          übertragen. Der Server leitet sie zusammen mit der gewählten Sprache an unseren KI-Anbieter Anthropic weiter
+          übertragen. Der Server leitet sie zusammen mit der gewählten Sprache an unseren KI-Anbieter Mistral AI weiter
           (siehe Abschnitt 4). Die KI liest den Brief und erstellt eine kurze Erklärung, die Frist, den Betrag und das
           Aktenzeichen. Das Ergebnis wird an Ihr Gerät zurückgeschickt.
         </p>
@@ -118,32 +118,47 @@ export default function DatenschutzPage() {
           <mark>[TODO: Name und Anschrift des Hosting-Anbieters, Serverstandort, Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO]</mark>
         </p>
 
-        <h3 className={h3}>4.2 KI-Anbieter Anthropic</h3>
+        <h3 className={h3}>4.2 KI-Anbieter Mistral AI</h3>
         <p className={p}>
-          Zum Lesen und Erklären der Briefe nutzen wir das KI-Modell Claude über die Programmierschnittstelle (API) von
-          Anthropic. Vertragspartner:{" "}
-          <mark>[TODO: Anthropic-Vertragspartei und Anschrift laut abgeschlossenem Vertrag bestätigen]</mark>. Anthropic
-          verarbeitet die Daten als Auftragsverarbeiter auf Grundlage eines Vertrags nach Art. 28 DSGVO{" "}
-          <mark>[TODO: Abschluss des Data Processing Addendum bestätigen]</mark>.
+          Zum Lesen und Erklären der Briefe nutzen wir KI-Modelle von Mistral AI über deren Programmierschnittstelle
+          (API). Anbieter: Mistral AI SAS, 15 rue des Halles, 75001 Paris, Frankreich{" "}
+          <mark>[TODO: Vertragspartei und Anschrift laut Nutzungsbedingungen bzw. abgeschlossenem Vertrag bestätigen]</mark>.
+          Mistral AI verarbeitet die Daten als Auftragsverarbeiter auf Grundlage eines Vertrags nach Art. 28 DSGVO{" "}
+          <mark>[TODO: Abschluss bzw. Geltung des Auftragsverarbeitungsvertrags (Data Processing Agreement) von Mistral AI bestätigen]</mark>.
         </p>
         <p className={p}>
-          Nach den kommerziellen Nutzungsbedingungen von Anthropic werden Daten, die über die API übermittelt werden, nicht
-          zum Training von KI-Modellen verwendet. Anthropic kann Ein- und Ausgaben für einen begrenzten Zeitraum zur
-          Erkennung von Missbrauch speichern und löscht sie danach{" "}
+          Die Verarbeitung erfolgt in zwei Schritten: Zuerst wandelt der Dienst „Mistral OCR“ das Foto oder PDF in Text
+          um (Texterkennung). Anschließend erstellt ein Sprachmodell von Mistral AI aus diesem Text die Erklärung und
+          ermittelt Frist, Betrag und Aktenzeichen.
+        </p>
+        <p className={p}>
+          Nach Angaben von Mistral AI werden Daten, die an Mistral OCR übermittelt werden, nicht zum Training von
+          KI-Modellen verwendet und standardmäßig nicht gespeichert (Zero Data Retention).
+        </p>
+        <p className={p}>
+          Für die Anfragen an die Sprachmodelle haben wir in unserem Mistral-Konto die Einstellung deaktiviert, mit der
+          Mistral AI diese Daten zur Verbesserung seiner Modelle verwenden dürfte („Anonymous improvement data“). Ihre
+          Briefe werden daher nicht zum Training von KI-Modellen verwendet{" "}
           <mark>
-            [TODO: aktuelle Aufbewahrungsfrist laut Anthropic-Bedingungen eintragen bzw. Vereinbarung ohne Speicherung
-            (Zero Data Retention) bestätigen]
+            [TODO: vor dem Start bestätigen, dass im Mistral-Admin-Bereich unter „Privacy“ die Option „Anonymous
+            improvement data“ ausgeschaltet ist – andernfalls ist diese Aussage und der Hinweis in der Einwilligung
+            unzutreffend]
           </mark>
+          . Mistral AI kann Ein- und Ausgaben der Sprachmodelle für einen begrenzten Zeitraum, etwa zur Erkennung von
+          Missbrauch, speichern und löscht sie danach{" "}
+          <mark>[TODO: Aufbewahrungsfrist für Daten der Sprachmodell-API laut aktuellen Mistral-Bedingungen bestätigen und eintragen]</mark>
           .
         </p>
 
-        <h3 className={h3}>4.3 Übermittlung in die USA</h3>
+        <h3 className={h3}>4.3 Ort der Verarbeitung</h3>
         <p className={p}>
-          Anthropic hat seinen Sitz in den USA; eine Verarbeitung dort ist möglich. Die Übermittlung stützt sich auf{" "}
+          Mistral AI hat seinen Sitz in Frankreich und damit in der Europäischen Union. Nach eigenen Angaben speichert und
+          verarbeitet Mistral AI die Daten standardmäßig in der EU <mark>[TODO: bestätigen]</mark>. Eine Übermittlung in
+          ein Land außerhalb der EU bzw. des Europäischen Wirtschaftsraums (Drittland) ist daher nicht vorgesehen{" "}
           <mark>
-            [TODO vom Betreiber zu bestätigen: Angemessenheitsbeschluss der EU-Kommission zum EU-US Data Privacy Framework
-            (Art. 45 DSGVO), sofern der Anbieter zertifiziert ist, und/oder EU-Standardvertragsklauseln (Art. 46 Abs. 2
-            lit. c DSGVO)]
+            [TODO: prüfen, ob Mistral AI Unterauftragsverarbeiter außerhalb der EU/des EWR einsetzt; falls ja, diese
+            Empfänger und die Garantien nach Art. 44 ff. DSGVO (z. B. Angemessenheitsbeschluss oder
+            EU-Standardvertragsklauseln) hier nennen]
           </mark>
           .
         </p>
@@ -188,7 +203,7 @@ export default function DatenschutzPage() {
 
         <h2 className={h2}>8. Hinweis zur künstlichen Intelligenz</h2>
         <p className={p}>
-          Die Erklärungen in BriefKlar werden von einem KI-System (Claude von Anthropic) erzeugt. Darauf weisen wir Sie vor
+          Die Erklärungen in BriefKlar werden von einem KI-System (Mistral AI) erzeugt. Darauf weisen wir Sie vor
           der ersten Nutzung hin (Art. 50 KI-Verordnung, EU 2024/1689). KI kann Fehler machen.
           Prüfen Sie Datum, Betrag und Aktenzeichen immer im Originalbrief.
         </p>

@@ -27,7 +27,7 @@ describe("ConsentGate", () => {
     fireEvent.click(screen.getByRole("button", { name: "English" }));
 
     expect(screen.getByRole("heading", { level: 1, name: "Before you start" })).toBeTruthy();
-    expect(screen.getByText(/Claude by Anthropic/)).toBeTruthy();
+    expect(screen.getByText(/Mistral AI, a company in the EU \(France\)/)).toBeTruthy();
     expect(screen.getByRole("link", { name: "Privacy policy (in German)" }).getAttribute("href")).toBe("/datenschutz");
 
     const continueButton = screen.getByRole("button", { name: "Continue" }) as HTMLButtonElement;

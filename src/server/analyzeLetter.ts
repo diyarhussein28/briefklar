@@ -1,72 +1,72 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { Mistral } from "@mistralai/mistralai";
 import type { Language } from "@/i18n/languages";
 import { ACCEPTED_TYPES, LetterAnalysisSchema, type LetterAnalysis } from "@/lib/letter";
-import { SYSTEM_PROMPT, buildUserInstruction } from "./prompt";
+import { SYSTEM_PROMPT, buildUserMessage } from "./prompt";
 
-export const MODEL = "claude-opus-5-5";
+/** Reads the photo/PDF into Markdown text. */
+export const OCR_MODEL = "mistral-ocr-latest";
+/** Explains the text; supports strict JSON-schema structured outputs. */
+export const CHAT_MODEL = "mistral-medium-latest";
 
 export type AcceptedType = (typeof ACCEPTED_TYPES)[number];
 
-/** Claude answered, but not with a usable analysis. */
+/** The model writes everything except the transcript, which comes verbatim from OCR. */
+const ExplanationSchema = LetterAnalysisSchema.omit({ transcript: true });
+
+/** Mistral answered, but not with a usable analysis. */
 export class AnalyzeLetterError extends Error {
-  constructor(readonly reason: "refused" | "invalid_output") {
+  constructor(readonly reason: "invalid_output") {
     super(`Letter analysis failed: ${reason}`);
     this.name = "AnalyzeLetterError";
   }
 }
 
-const outputFormat = zodOutputFormat(LetterAnalysisSchema);
+let defaultClient: Mistral | undefined;
 
-let defaultClient: Anthropic | undefined;
-
-/** Created on first use so importing this module does not require ANTHROPIC_API_KEY. */
-function getClient(): Anthropic {
-  defaultClient ??= new Anthropic();
+/** Created on first use so importing this module does not require MISTRAL_API_KEY. */
+function getClient(): Mistral {
+  defaultClient ??= new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
   return defaultClient;
+}
+
+/** OCR Markdown references extracted images as `![img-0.jpeg](img-0.jpeg)`; they carry no text. */
+const IMAGE_REFERENCE = /!\[[^\]]*\]\([^)]*\)/g;
+
+async function readLetterText(bytes: Uint8Array, mediaType: AcceptedType, client: Mistral): Promise<string> {
+  const dataUrl = `data:${mediaType};base64,${Buffer.from(bytes).toString("base64")}`;
+  const result = await client.ocr.process({
+    model: OCR_MODEL,
+    document:
+      mediaType === "application/pdf"
+        ? { type: "document_url", documentUrl: dataUrl }
+        : { type: "image_url", imageUrl: dataUrl },
+  });
+  return result.pages
+    .map((page) => page.markdown.replace(IMAGE_REFERENCE, "").trim())
+    .filter(Boolean)
+    .join("\n\n");
 }
 
 export async function analyzeLetter(
   input: { bytes: Buffer | Uint8Array; mediaType: AcceptedType; language: Language; today: string },
-  client: Anthropic = getClient(),
+  client: Mistral = getClient(),
 ): Promise<LetterAnalysis> {
-  const data = Buffer.from(input.bytes).toString("base64");
-  const fileBlock =
-    input.mediaType === "application/pdf"
-      ? { type: "document" as const, source: { type: "base64" as const, media_type: input.mediaType, data } }
-      : { type: "image" as const, source: { type: "base64" as const, media_type: input.mediaType, data } };
+  const transcript = await readLetterText(input.bytes, input.mediaType, client);
 
-  // `create` instead of `parse`: `parse` throws on non-JSON text before we can look at
-  // stop_reason, and it reads the first text block, which after a server-side fallback
-  // may be the declined model's partial output.
-  const response = await client.beta.messages.create({
-    model: MODEL,
-    max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
+  const response = await client.chat.parse({
+    model: CHAT_MODEL,
+    temperature: 0.2,
     messages: [
-      {
-        role: "user",
-        content: [fileBlock, { type: "text", text: buildUserInstruction(input.language, input.today) }],
-      },
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: buildUserMessage(input.language, input.today, transcript) },
     ],
-    output_config: { effort: "medium", format: outputFormat },
+    responseFormat: ExplanationSchema,
   });
 
-  if (response.stop_reason === "refusal") throw new AnalyzeLetterError("refused");
-  if (response.stop_reason !== "end_turn") throw new AnalyzeLetterError("invalid_output");
+  const choice = response.choices?.[0];
+  if (choice?.finishReason !== "stop") throw new AnalyzeLetterError("invalid_output");
+  const explanation = ExplanationSchema.safeParse(choice.message?.parsed);
+  if (!explanation.success) throw new AnalyzeLetterError("invalid_output");
 
-  // Only the content after the last fallback boundary belongs to the model that answered.
-  const lastFallback = response.content.findLastIndex((block) => block.type === "fallback");
-  const text = response.content
-    .slice(lastFallback + 1)
-    .map((block) => (block.type === "text" ? block.text : ""))
-    .join("");
-
-  try {
-    return outputFormat.parse(text);
-  } catch {
-    throw new AnalyzeLetterError("invalid_output");
-  }
+  return { ...explanation.data, transcript };
 }

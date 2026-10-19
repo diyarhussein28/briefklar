@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import { HTTPClientError, MistralError, SDKValidationError } from "@mistralai/mistralai/models/errors";
 import { isLanguage } from "@/i18n/languages";
 import { ACCEPTED_TYPES, MAX_UPLOAD_BYTES, type AnalyzeError, type LetterAnalysis } from "@/lib/letter";
 import { AnalyzeLetterError, analyzeLetter, type AcceptedType } from "@/server/analyzeLetter";
@@ -55,14 +55,14 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     if (error instanceof AnalyzeLetterError) {
       console.error(`[analyze] ${error.reason}`);
-      return error.reason === "refused" ? fail(422, "refused") : fail(502, "upstream");
+      return fail(502, "upstream");
     }
-    if (error instanceof Anthropic.RateLimitError) {
-      console.error(`[analyze] rate limited (request ${error.requestID})`);
-      return fail(429, "rate_limited");
+    if (error instanceof MistralError) {
+      console.error(`[analyze] Mistral API error ${error.statusCode}`);
+      return error.statusCode === 429 ? fail(429, "rate_limited") : fail(502, "upstream");
     }
-    if (error instanceof Anthropic.APIError) {
-      console.error(`[analyze] Anthropic API error ${error.status ?? "connection"} (request ${error.requestID})`);
+    if (error instanceof HTTPClientError || error instanceof SDKValidationError) {
+      console.error(`[analyze] Mistral ${error.name}`);
       return fail(502, "upstream");
     }
     throw error;

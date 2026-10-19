@@ -1,5 +1,5 @@
 // @vitest-environment node
-import Anthropic from "@anthropic-ai/sdk";
+import { ConnectionError, MistralError } from "@mistralai/mistralai/models/errors";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MAX_UPLOAD_BYTES, type LetterAnalysis } from "@/lib/letter";
 import { AnalyzeLetterError, analyzeLetter } from "@/server/analyzeLetter";
@@ -18,6 +18,11 @@ function post(fields: { file?: File; language?: string }): Promise<Response> {
   if (fields.file) form.set("file", fields.file);
   if (fields.language !== undefined) form.set("language", fields.language);
   return POST(new Request("http://localhost/api/analyze", { method: "POST", body: form }));
+}
+
+function mistralError(status: number): MistralError {
+  const response = new Response("{}", { status });
+  return new MistralError("error", { response, request: new Request("https://api.mistral.ai"), body: "{}" });
 }
 
 const jpeg = new File([new Uint8Array([1, 2, 3])], "letter.jpg", { type: "image/jpeg" });
@@ -76,11 +81,10 @@ describe("POST /api/analyze", () => {
   });
 
   it.each([
-    [new AnalyzeLetterError("refused"), 422, "refused"],
     [new AnalyzeLetterError("invalid_output"), 502, "upstream"],
-    [new Anthropic.RateLimitError(429, undefined, "rate limited", new Headers()), 429, "rate_limited"],
-    [new Anthropic.InternalServerError(529, undefined, "overloaded", new Headers()), 502, "upstream"],
-    [new Anthropic.APIConnectionError({ message: "offline" }), 502, "upstream"],
+    [mistralError(429), 429, "rate_limited"],
+    [mistralError(503), 502, "upstream"],
+    [new ConnectionError("offline"), 502, "upstream"],
   ])("maps %s to %i %s", async (error, status, code) => {
     mockedAnalyze.mockRejectedValue(error);
     const res = await post({ file: jpeg, language: "en" });

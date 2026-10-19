@@ -23,7 +23,7 @@ export const consentMessages: Messages<ConsentKey> = {
     title: "قبل أن تبدأ",
     aiTitle: "نستخدم الذكاء الاصطناعي",
     aiText:
-      "يستخدم BriefKlar الذكاء الاصطناعي (Claude من شركة Anthropic) لقراءة رسالتك وشرحها. قد يخطئ الذكاء الاصطناعي، لذلك تحقّق دائمًا من التواريخ والمبالغ في الرسالة الأصلية.",
+      "يستخدم BriefKlar الذكاء الاصطناعي من شركة Mistral AI، وهي شركة في الاتحاد الأوروبي (فرنسا)، لقراءة رسالتك وشرحها. قد يخطئ الذكاء الاصطناعي، لذلك تحقّق دائمًا من التواريخ والمبالغ في الرسالة الأصلية.",
     dataTitle: "رسالتك خاصة",
     dataText:
       "قد تحتوي رسالتك على بيانات حساسة (الصحة، المساعدات الاجتماعية، الإقامة). تُرسَل الرسالة مشفّرةً إلى خادمنا وإلى مزوّد الذكاء الاصطناعي للمعالجة فقط، ولا تُحفَظ، ولا تُستخدَم لتدريب الذكاء الاصطناعي.",
@@ -44,7 +44,7 @@ export const consentMessages: Messages<ConsentKey> = {
     title: "Перш ніж почати",
     aiTitle: "Ми використовуємо штучний інтелект",
     aiText:
-      "BriefKlar використовує штучний інтелект (Claude від компанії Anthropic), щоб прочитати й пояснити ваш лист. Штучний інтелект може помилятися — завжди перевіряйте дати та суми в оригінальному листі.",
+      "BriefKlar використовує штучний інтелект компанії Mistral AI з ЄС (Франція), щоб прочитати й пояснити ваш лист. Штучний інтелект може помилятися — завжди перевіряйте дати та суми в оригінальному листі.",
     dataTitle: "Ваш лист — приватний",
     dataText:
       "Ваш лист може містити чутливі дані (здоров'я, соціальні виплати, статус перебування). Він надсилається в зашифрованому вигляді на наш сервер і постачальнику штучного інтелекту лише для обробки, не зберігається і не використовується для навчання штучного інтелекту.",
@@ -65,7 +65,7 @@ export const consentMessages: Messages<ConsentKey> = {
     title: "Başlamadan önce",
     aiTitle: "Yapay zekâ kullanıyoruz",
     aiText:
-      "BriefKlar, mektubunuzu okumak ve açıklamak için yapay zekâ (Anthropic firmasının Claude modeli) kullanır. Yapay zekâ hata yapabilir — tarihleri ve tutarları her zaman asıl mektuptan kontrol edin.",
+      "BriefKlar, mektubunuzu okumak ve açıklamak için AB'de (Fransa) bulunan Mistral AI firmasının yapay zekâsını kullanır. Yapay zekâ hata yapabilir — tarihleri ve tutarları her zaman asıl mektuptan kontrol edin.",
     dataTitle: "Mektubunuz size özeldir",
     dataText:
       "Mektubunuz hassas bilgiler içerebilir (sağlık, sosyal yardımlar, oturum durumu). Mektubunuz yalnızca işlenmesi için şifreli olarak sunucumuza ve yapay zekâ sağlayıcısına gönderilir, saklanmaz ve yapay zekâyı eğitmek için kullanılmaz.",
@@ -86,7 +86,7 @@ export const consentMessages: Messages<ConsentKey> = {
     title: "Before you start",
     aiTitle: "We use artificial intelligence",
     aiText:
-      "BriefKlar uses artificial intelligence (Claude by Anthropic) to read and explain your letter. The AI can make mistakes — always check dates and amounts in the original letter.",
+      "BriefKlar uses artificial intelligence from Mistral AI, a company in the EU (France), to read and explain your letter. The AI can make mistakes — always check dates and amounts in the original letter.",
     dataTitle: "Your letter stays private",
     dataText:
       "Your letter can contain sensitive data (health, benefits, residence status). It is sent encrypted to our server and to the AI provider for processing only, is not stored and is not used to train AI.",
@@ -107,7 +107,7 @@ export const consentMessages: Messages<ConsentKey> = {
     title: "Bevor Sie anfangen",
     aiTitle: "Wir benutzen Künstliche Intelligenz",
     aiText:
-      "BriefKlar benutzt Künstliche Intelligenz. Die Künstliche Intelligenz heißt Claude. Sie ist von der Firma Anthropic. Sie liest Ihren Brief. Und sie erklärt Ihnen den Brief. Die Künstliche Intelligenz kann Fehler machen. Prüfen Sie darum immer im echten Brief: das Datum und den Geld-Betrag.",
+      "BriefKlar benutzt Künstliche Intelligenz. Die Künstliche Intelligenz ist von der Firma Mistral AI. Die Firma ist in Frankreich. Frankreich ist in der EU. Die Künstliche Intelligenz liest Ihren Brief. Und sie erklärt Ihnen den Brief. Die Künstliche Intelligenz kann Fehler machen. Prüfen Sie darum immer im echten Brief: das Datum und den Geld-Betrag.",
     dataTitle: "Ihr Brief ist privat",
     dataText:
       "In Ihrem Brief können private Dinge stehen. Zum Beispiel über Ihre Gesundheit, über Geld vom Amt oder über Ihren Aufenthalt. Wir schicken Ihren Brief verschlüsselt an unseren Server und an die Firma von der Künstlichen Intelligenz. Nur damit der Brief erklärt wird. Wir speichern Ihren Brief nicht. Niemand benutzt Ihren Brief, um Künstliche Intelligenz zu trainieren.",
